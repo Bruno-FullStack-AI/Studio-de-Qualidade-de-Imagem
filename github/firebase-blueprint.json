@@ -1,0 +1,112 @@
+{
+  "entities": {
+    "EnhancedPhoto": {
+      "title": "EnhancedPhoto",
+      "description": "Uma foto com super-resolução processada pelo Upscayl Studio Web e sincronizada na nuvem",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Identificador único da foto",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID do usuário proprietário da foto",
+          "maxLength": 128
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "E-mail do proprietário da foto",
+          "maxLength": 256
+        },
+        "title": {
+          "type": "string",
+          "description": "Título ou nome do arquivo da foto",
+          "maxLength": 200
+        },
+        "originalDataUrl": {
+          "type": "string",
+          "description": "DataURL ou URL da imagem original",
+          "maxLength": 1048576
+        },
+        "upscaledDataUrl": {
+          "type": "string",
+          "description": "DataURL ou URL da imagem com super-resolução Upscayl",
+          "maxLength": 1048576
+        },
+        "originalWidth": {
+          "type": "number",
+          "description": "Largura da imagem original em pixels"
+        },
+        "originalHeight": {
+          "type": "number",
+          "description": "Altura da imagem original em pixels"
+        },
+        "upscaledWidth": {
+          "type": "number",
+          "description": "Largura da imagem melhorada em pixels"
+        },
+        "upscaledHeight": {
+          "type": "number",
+          "description": "Altura da imagem melhorada em pixels"
+        },
+        "modelId": {
+          "type": "string",
+          "description": "Identificador do modelo Upscayl utilizado",
+          "maxLength": 64
+        },
+        "modelName": {
+          "type": "string",
+          "description": "Nome legível do modelo Upscayl",
+          "maxLength": 128
+        },
+        "scaleFactor": {
+          "type": "number",
+          "description": "Fator de ampliação (1x, 2x, 3x, 4x, etc.)"
+        },
+        "exportFormat": {
+          "type": "string",
+          "description": "Formato de exportação do arquivo",
+          "maxLength": 16
+        },
+        "processingTimeMs": {
+          "type": "number",
+          "description": "Tempo de processamento em milissegundos"
+        },
+        "fileSizeEstimateKb": {
+          "type": "number",
+          "description": "Tamanho estimado em KB do arquivo gerado"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp ISO ou server timestamp de criação",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title",
+        "originalDataUrl",
+        "upscaledDataUrl",
+        "originalWidth",
+        "originalHeight",
+        "upscaledWidth",
+        "upscaledHeight",
+        "modelId",
+        "modelName",
+        "scaleFactor",
+        "exportFormat"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/photos/{photoId}": {
+      "schema": {
+        "$ref": "EnhancedPhoto"
+      },
+      "description": "Coleção de fotos melhoradas isoladas por usuário autenticado"
+    }
+  }
+}

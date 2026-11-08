@@ -1,0 +1,6 @@
+{
+  "name": "Upscayl Studio Web",
+  "description": "Plataforma web gratuita e ilimitada de super-resolução e restauração de imagens inspirada na arquitetura open-source Upscayl (Real-ESRGAN / Remacri / Ultrasharp) com galeria pessoal e auto-hospedagem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

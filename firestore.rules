@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny global catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidEnhancedPhoto(data, userId) {
+      return data.keys().hasAll([
+        'id', 'userId', 'title', 'originalDataUrl', 'upscaledDataUrl',
+        'originalWidth', 'originalHeight', 'upscaledWidth', 'upscaledHeight',
+        'modelId', 'modelName', 'scaleFactor', 'exportFormat'
+      ]) &&
+      data.userId == userId &&
+      data.id is string && data.id.size() <= 128 &&
+      data.title is string && data.title.size() <= 200 &&
+      data.originalDataUrl is string && data.originalDataUrl.size() <= 1048576 &&
+      data.upscaledDataUrl is string && data.upscaledDataUrl.size() <= 1048576 &&
+      data.originalWidth is number &&
+      data.originalHeight is number &&
+      data.upscaledWidth is number &&
+      data.upscaledHeight is number &&
+      data.modelId is string && data.modelId.size() <= 64 &&
+      data.modelName is string && data.modelName.size() <= 128 &&
+      data.scaleFactor is number &&
+      data.exportFormat is string && data.exportFormat.size() <= 16;
+    }
+
+    // Isolated user enhanced photos subcollection
+    match /users/{userId}/photos/{photoId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidId(photoId) && isValidEnhancedPhoto(incoming(), userId);
+      allow update: if isOwner(userId) && isValidId(photoId) && isValidEnhancedPhoto(incoming(), userId) && incoming().userId == userId;
+      allow delete: if isOwner(userId) && isValidId(photoId);
+    }
+  }
+}
